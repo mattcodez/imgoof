@@ -8,11 +8,24 @@ function init(){
 
   let img = new Image();
   img.onload = function () {
-    //draw background image
     ctx.drawImage(img, 0, 0);
-    //draw a box over the top
-    // ctx.fillStyle = "rgba(200, 0, 0, 0.5)";
-    // ctx.fillRect(0, 0, 500, 500);
+    imgoof(ctx);
   };
   img.src = 'apple.jpg';
+}
+
+function imgoof(ctx){
+  let imageData = ctx.getImageData(0, 0, 512, 640);
+  let data = imageData.data;//Uint8ClampedArray
+  let buffer = data.buffer;
+  let data32 = new Uint32Array(buffer); //Per-pixel access
+
+  let newData = new ArrayBuffer(data.length);
+  let newData32 = new Uint32Array(buffer);
+  data32.forEach((pixel, i) => {
+    newData32[i] = pixel;
+  });
+
+  data.set(newData32);
+  ctx.putImageData(imageData, 0, 0);
 }
