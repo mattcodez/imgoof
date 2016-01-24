@@ -1,12 +1,17 @@
 "use strict";
 
 document.addEventListener('DOMContentLoaded',init);
+let $ = window.$ || document.querySelector.bind(document);
 
 function init(){
-  let canvasS = document.querySelector('#start');
-  let canvasF = document.querySelector('#finish');
+  let canvasS = $('#start');
+  let canvasF = $('#finish');
   let ctxS = canvasS.getContext('2d');
   let ctxF = canvasF.getContext('2d');
+
+  //Color Controls event handlers
+  $('#colorControl .red')
+    .addEventListener('change', (e) => applyColor(ctxS, ctxF));
 
   let img = new Image();
   img.onload = function () {
@@ -16,7 +21,16 @@ function init(){
   img.src = 'apple.jpg';
 }
 
-function imgoof(ctxS, ctxF){
+function applyColor(ctxS, ctxF){
+  let colors = {
+    red: ~~$('#colorControl .red').value
+  };
+  imgoof(ctxS, ctxF, colors);
+}
+
+function imgoof(ctxS, ctxF, colors){
+  colors = colors || {};
+
   let imageData = ctxS.getImageData(0, 0, 512, 640);
   let data = imageData.data;//Uint8ClampedArray
   let buffer = data.buffer;
@@ -27,7 +41,7 @@ function imgoof(ctxS, ctxF){
   //a,b,g,r -> color bit order
   data32.forEach((pixel, i) => {
     let red = pixel & 255;  //red is far right of the 32 bits
-    red += 100;
+    red += colors.red || 0;
     red = red > 255 ? 255 : red; //If we go over 255 we'll start touching
     newData32[i] = (pixel | red);
   });
