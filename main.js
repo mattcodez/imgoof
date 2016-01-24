@@ -24,10 +24,11 @@ function imgoof(ctxS, ctxF){
 
   let newData = new ArrayBuffer(data.length);
   let newData32 = new Uint32Array(buffer);
+  //a,b,g,r -> color bit order
   data32.forEach((pixel, i) => {
-    let red = pixel & 255;
+    let red = pixel & 255;  //red is far right of the 32 bits
     red += 100;
-    red = red > 255 ? 255 : red;
+    red = red > 255 ? 255 : red; //If we go over 255 we'll start touching
     newData32[i] = (pixel | red);
   });
 
