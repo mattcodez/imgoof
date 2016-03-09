@@ -58,16 +58,21 @@ function imgoof(ctxS, ctxF, colors){
     let alpha = (pixel & 0b11111111000000000000000000000000) >>> 24;
 
     //****Perform modifications****
-    //Add slider value up to 255
-    //TODO Allow negative values down to 0
     red += colors.red || 0;
     red = red > 255 ? 255 : red; //If we go over 255 we'll start touching
+    red = red < 0 ? 0 : red; //Don't want to overflow
+
     green += colors.green || 0;
     green = green > 255 ? 255 : green;
+    green = green < 0 ? 0 : green;
+
     blue += colors.blue || 0;
     blue = blue > 255 ? 255 : blue;
-    alpha += colors.alpha || 0; //TODO doesn't do much without a background
+    blue = blue < 0 ? 0 : blue;
+    
+    alpha += colors.alpha || 0;
     alpha = alpha > 255 ? 255 : alpha;
+    alpha = alpha < 0 ? 0 : alpha;
 
     //https://hacks.mozilla.org/2011/12/faster-canvas-pixel-manipulation-with-typed-arrays/
     //****Apply modifications****
