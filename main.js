@@ -14,7 +14,7 @@ function init(){
   let rangeDom = $$('#colorControl input[type=range]');
   for (let i = 0; i < rangeDom.length; i++){
     let r = rangeDom[i];
-    r.addEventListener('change', (e) => applyColor(ctxS, ctxF));
+    r.addEventListener('input', (e) => applyColor(ctxS, ctxF));
   }
 
   let img = new Image();
