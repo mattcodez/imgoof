@@ -48,6 +48,7 @@ function imgoof(ctxS, ctxF, colors){
   let newData = new ArrayBuffer(data.length);
   let newData32 = new Uint32Array(buffer);
 
+  const startRender = new Date();
   data32.forEach((pixel, i) => {
     //a,b,g,r -> color bit order
 
@@ -83,6 +84,8 @@ function imgoof(ctxS, ctxF, colors){
       (green << 8 ) |
        red;
   });
+  const endRender = new Date();
+  console.log('Render time: ', endRender - startRender);
 
   data.set(newData32);
   ctxF.putImageData(imageData, 0, 0);
