@@ -50,6 +50,7 @@ function imgoof(ctxS, ctxF, colors){
   for (let i = 0; i < data8.length; i+=4){
     //a,b,g,r -> color bit order
     
+    //FIXME: Colors backwards!
     //****Get existing****
     let red   = data8[i+3];
     let green = data8[i+2];
