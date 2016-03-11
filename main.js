@@ -39,24 +39,22 @@ function imgoof(ctxS, ctxF, colors){
   colors = colors || {};
 
   let imageData = ctxS.getImageData(0, 0, 512, 640);
-  let data = imageData.data;//Uint8ClampedArray
+  let data = imageData.data;
   let buffer = data.buffer;
-  let data32 = new Uint32Array(buffer); //Per-pixel access
-  //Decided against 8 bit clamp because I wanted each item in the
-  //buffer to be a single pixel
+  let data8 = new Uint8ClampedArray(buffer); //Per-color access
 
   let newData = new ArrayBuffer(data.length);
-  let newData32 = new Uint32Array(buffer);
+  let newData8 = new Uint8ClampedArray(buffer);
 
   const startRender = new Date();
-  data32.forEach((pixel, i) => {
+  for (let i = 0; i < data8.length; i+=4){
     //a,b,g,r -> color bit order
-
+    
     //****Get existing****
-    let red   =  pixel & 0b00000000000000000000000011111111;
-    let green = (pixel & 0b00000000000000001111111100000000) >>> 8;
-    let blue  = (pixel & 0b00000000111111110000000000000000) >>> 16;
-    let alpha = (pixel & 0b11111111000000000000000000000000) >>> 24;
+    let red   = data8[i+3];
+    let green = data8[i+2];
+    let blue  = data8[i+1];
+    let alpha = data8[i];
 
     //****Perform modifications****
     red += colors.red || 0;
@@ -78,15 +76,14 @@ function imgoof(ctxS, ctxF, colors){
     //https://hacks.mozilla.org/2011/12/faster-canvas-pixel-manipulation-with-typed-arrays/
     //****Apply modifications****
 
-    newData32[i] =
-      (alpha << 24) |
-      (blue  << 16) |
-      (green << 8 ) |
-       red;
-  });
+    newData8[i+3] = red;
+    newData8[i+2] = green;
+    newData8[i+1] = blue;
+    newData8[i]   = alpha;
+  }
   const endRender = new Date();
   console.log('Render time: ', endRender - startRender);
 
-  data.set(newData32);
+  data.set(newData8);
   ctxF.putImageData(imageData, 0, 0);
 }
