@@ -48,14 +48,12 @@ function imgoof(ctxS, ctxF, colors){
 
   const startRender = new Date();
   for (let i = 0; i < data8.length; i+=4){
-    //a,b,g,r -> color bit order
     
-    //FIXME: Colors backwards!
     //****Get existing****
-    let red   = data8[i+3];
-    let green = data8[i+2];
-    let blue  = data8[i+1];
-    let alpha = data8[i];
+    let red   = data8[i];
+    let green = data8[i+1];
+    let blue  = data8[i+2];
+    let alpha = data8[i+3];
 
     //****Perform modifications****
     red += colors.red || 0;
@@ -69,7 +67,7 @@ function imgoof(ctxS, ctxF, colors){
     blue += colors.blue || 0;
     blue = blue > 255 ? 255 : blue;
     blue = blue < 0 ? 0 : blue;
-    
+
     alpha += colors.alpha || 0;
     alpha = alpha > 255 ? 255 : alpha;
     alpha = alpha < 0 ? 0 : alpha;
@@ -77,10 +75,10 @@ function imgoof(ctxS, ctxF, colors){
     //https://hacks.mozilla.org/2011/12/faster-canvas-pixel-manipulation-with-typed-arrays/
     //****Apply modifications****
 
-    newData8[i+3] = red;
-    newData8[i+2] = green;
-    newData8[i+1] = blue;
-    newData8[i]   = alpha;
+    newData8[i] = red;
+    newData8[i+1] = green;
+    newData8[i+2] = blue;
+    newData8[i+3] = alpha;
   }
   const endRender = new Date();
   console.log('Render time: ', endRender - startRender);
