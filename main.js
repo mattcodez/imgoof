@@ -61,21 +61,21 @@ function imgoof(ctxS, ctxF, colors){
     let alpha = data8[i+3];
 
     //****Perform modifications****
-    red += rMod;
-
-    green += gMod;
-
-    blue += bMod;
-
-    alpha += aMod;
-
-    //https://hacks.mozilla.org/2011/12/faster-canvas-pixel-manipulation-with-typed-arrays/
-    //****Apply modifications****
-
-    newData8[i] = red;
-    newData8[i+1] = green;
-    newData8[i+2] = blue;
-    newData8[i+3] = alpha;
+    newData8.set([red +rMod, green + gMod, blue + bMod, alpha + aMod], i)
+    // red += rMod;
+    //
+    // green += gMod;
+    //
+    // blue += bMod;
+    //
+    // alpha += aMod;
+    //
+    // //****Apply modifications****
+    //
+    // newData8[i] = red;
+    // newData8[i+1] = green;
+    // newData8[i+2] = blue;
+    // newData8[i+3] = alpha;
   }
   const endRender = new Date();
   console.log('Render time: ', endRender - startRender);
