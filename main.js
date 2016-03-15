@@ -36,13 +36,6 @@ function applyColor(ctxS, ctxF){
 }
 
 function imgoof(ctxS, ctxF, colors){
-  colors = colors || {};
-  const rMod = colors.red || 0,
-        gMod = colors.green || 0,
-        bMod = colors.blue || 0,
-        aMod = colors.aplha || 0;
-
-
   let imageData = ctxS.getImageData(0, 0, 512, 640);
   let data = imageData.data;
   let buffer = data.buffer;
@@ -52,13 +45,29 @@ function imgoof(ctxS, ctxF, colors){
   let newData8 = new Uint8ClampedArray(buffer);
 
   const startRender = new Date();
-  for (let i = 0; i < data8.length; i+=4){
+  classicLoop(data8, newData8, colors);
+
+  const endRender = new Date();
+  console.log('Render time: ', endRender - startRender);
+
+  data.set(newData8);
+  ctxF.putImageData(imageData, 0, 0);
+}
+
+function classicLoop(src8, dest8, colors){
+  colors = colors || {};
+  const rMod = colors.red || 0,
+        gMod = colors.green || 0,
+        bMod = colors.blue || 0,
+        aMod = colors.aplha || 0;
+
+  for (let i = 0; i < src8.length; i+=4){
 
     //****Get existing****
-    let red   = data8[i];
-    let green = data8[i+1];
-    let blue  = data8[i+2];
-    let alpha = data8[i+3];
+    let red   = src8[i];
+    let green = src8[i+1];
+    let blue  = src8[i+2];
+    let alpha = src8[i+3];
 
     //****Perform modifications****
     red += rMod;
@@ -71,14 +80,9 @@ function imgoof(ctxS, ctxF, colors){
 
     //****Apply modifications****
 
-    newData8[i] = red;
-    newData8[i+1] = green;
-    newData8[i+2] = blue;
-    newData8[i+3] = alpha;
+    dest8[i] = red;
+    dest8[i+1] = green;
+    dest8[i+2] = blue;
+    dest8[i+3] = alpha;
   }
-  const endRender = new Date();
-  console.log('Render time: ', endRender - startRender);
-
-  data.set(newData8);
-  ctxF.putImageData(imageData, 0, 0);
 }
