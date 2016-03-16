@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded',init);
 let $ = window.$ || document.querySelector.bind(document);
 let $$ = window.$$ || document.querySelectorAll.bind(document);
 
+let useSIMD = false;
 function init(){
   let canvasS = $('#start');
   let canvasF = $('#finish');
@@ -23,6 +24,11 @@ function init(){
     imgoof(ctxS, ctxF);
   };
   img.src = 'apple.jpg';
+
+  if (typeof SIMD !== 'undefined'){
+    console.log('SIMD Detected!');
+    useSIMD = true;
+  }
 }
 
 function applyColor(ctxS, ctxF){
@@ -45,8 +51,7 @@ function imgoof(ctxS, ctxF, colors){
   let newData8 = new Uint8ClampedArray(buffer);
 
   const startRender = new Date();
-  if (typeof SIMD !== 'undefined'){
-    console.log('SIMD Detected!');
+  if (useSIMD){
     SIMDLoop(data8, newData8, colors);
   }
   else {
@@ -66,28 +71,18 @@ function SIMDLoop(src8, dest8, colors){
         bMod = colors.blue || 0,
         aMod = colors.aplha || 0;
 
-  for (let i = 0; i < src8.length; i+=4){
-    let srcSIMD = SIMD.Int8x16(
-      src8[i],  //red
-      src8[i+1],//green
-      src8[i+2],//blue
-      src8[i+3] //alpha
-    );
+  let modSIMD = SIMD.Int8x16(
+    rMod, gMod, bMod, aMod,
+    rMod, gMod, bMod, aMod,
+    rMod, gMod, bMod, aMod,
+    rMod, gMod, bMod, aMod
+  );
 
-    let modSIMD = SIMD.Int8x16(
-      rMod,
-      gMod,
-      bMod,
-      aMod
-    )
-
+  for (let i = 0; i < src8.length; i+=16){
+    let srcSIMD = SIMD.Int8x16.load(src8, i)
     //returns Int8x16
     let final = SIMD.Int8x16.addSaturate(srcSIMD, modSIMD);
-    //FIXME: this doesn't work, will need to use store()
-    dest8[i] = final[0];
-    dest8[i+1] = final[1];
-    dest8[i+2] = final[2];
-    dest8[i+3] = final[3];
+    SIMD.Int8x16.store(dest8, i, final);
   }
 }
 
