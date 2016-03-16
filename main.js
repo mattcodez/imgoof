@@ -45,10 +45,18 @@ function imgoof(ctxS, ctxF, colors){
   let imageData = ctxS.getImageData(0, 0, 512, 640);
   let data = imageData.data;
   let buffer = data.buffer;
-  let data8 = new Uint8ClampedArray(buffer); //Per-color access
+  let data8 = new Uint8Array(buffer); //Per-color access
 
-  let newData = new ArrayBuffer(data.length);
-  let newData8 = new Uint8ClampedArray(buffer);
+  let newDataBuffer = new ArrayBuffer(data.length);
+  let newData8;
+  if (useSIMD){
+    //if using SIMD, we don't need clamped here because we use addSaturate()
+    //might it bring a performance boost?
+    newData8 = new Uint8Array(newDataBuffer);
+  }
+  else {
+    newData8 = new Uint8ClampedArray(newDataBuffer);
+  }
 
   const startRender = new Date();
   if (useSIMD){
