@@ -78,8 +78,9 @@ function SIMDLoop(src8, dest8, colors){
     rMod, gMod, bMod, aMod
   );
 
+  //FIX: Max range for a signed integer will be -127 to +127
   for (let i = 0; i < src8.length; i+=16){
-    let srcSIMD = SIMD.Int8x16.load(src8, i)
+    let srcSIMD = SIMD.Int8x16.load(src8, i);
     //returns Int8x16
     let final = SIMD.Int8x16.addSaturate(srcSIMD, modSIMD);
     SIMD.Int8x16.store(dest8, i, final);
