@@ -25,6 +25,7 @@ function init(){
   };
   img.src = 'apple.jpg';
 
+  //Enable in Chrome with --js-flags="--harmony-simd"
   if (typeof SIMD !== 'undefined'){
     console.log('SIMD Detected!');
     useSIMD = true;
@@ -86,12 +87,15 @@ function SIMDLoop(src8, dest8, colors){
     rMod, gMod, bMod, aMod
   );
 
-  //FIX: Max range for a signed integer will be -127 to +127
+  /*FIXME: So, we want to be able to add negative numbers
+  I think we have to call addSaturate() on the same datatypes
+  Final numbers need to be unsigned to account for up to 255 for rgba
+  Probably some math hack I need to figure out.*/
   for (let i = 0; i < src8.length; i+=16){
-    let srcSIMD = SIMD.Int8x16.load(src8, i);
+    let srcSIMD = SIMD.Uint8x16.load(src8, i);
     //returns Int8x16
-    let final = SIMD.Int8x16.addSaturate(srcSIMD, modSIMD);
-    SIMD.Int8x16.store(dest8, i, final);
+    let final = SIMD.Uint8x16.addSaturate(srcSIMD, modSIMD);
+    SIMD.Uint8x16.store(dest8, i, final);
   }
 }
 
