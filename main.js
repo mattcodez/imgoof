@@ -87,10 +87,9 @@ function SIMDLoop(src8, dest8, colors){
     rMod, gMod, bMod, aMod
   );
 
-  /*FIXME: So, we want to be able to add negative numbers
-  I think we have to call addSaturate() on the same datatypes
-  Final numbers need to be unsigned to account for up to 255 for rgba
-  Probably some math hack I need to figure out.*/
+  //Colors are messed up because we can't fit -256 to 256 ranges into 8 bits
+  //No reasonable solution as we don't have access to vec_perm() from JS
+  //See 2.4.7 https://www.kernel.org/pub/linux/kernel/people/geoff/cell/ps3-linux-docs/CellProgrammingTutorial/BasicsOfSIMDProgramming.html
   for (let i = 0; i < src8.length; i+=16){
     let srcSIMD = SIMD.Uint8x16.load(src8, i);
     //returns Int8x16
