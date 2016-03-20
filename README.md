@@ -2,5 +2,5 @@
 Tool to goof around with raw image data
 
 ## Notes
-Just red slider working right now
+All sliders working. SIMD not really worth it but fun.
 http://mattcodez.github.io/imgoof
